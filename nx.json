@@ -7,5 +7,24 @@
     "tslint.json": "*",
     "nx.json": "*"
   },
-  "projects": {}
+  "projects": {
+    "shared-sample-ui": {
+      "tags": ["shared", "lib:components"]
+    },
+    "team1-sample-logic": {
+      "tags": ["team:team1", "lib:data-access"]
+    },
+    "app-one": {
+      "tags": ["team:team1"]
+    },
+    "app-one-e2e": {
+      "tags": ["team:team1"]
+    },
+    "app-two": {
+      "tags": ["team:team2"]
+    },
+    "app-two-e2e": {
+      "tags": ["team:team2"]
+    }
+  }
 }

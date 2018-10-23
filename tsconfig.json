@@ -16,6 +16,12 @@
     ],
     "baseUrl": ".",
     "paths": {
+      "@sample-monorepo/shared/sample-ui": [
+        "libs/shared/sample-ui/src/index.ts"
+      ],
+      "@sample-monorepo/team1/sample-logic": [
+        "libs/team1/sample-logic/src/index.ts"
+      ]
     }
   },
   "exclude": [

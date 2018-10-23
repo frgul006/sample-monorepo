@@ -1,13 +1,23 @@
 #!/bin/sh
-# Echo every command being executed
-#set -x
 
-getAffectedApps(){
-    local variable="$(./node_modules/.bin/nx affected:apps origin/master HEAD)"
-    echo $variable
-}
+BUILD_NUMBER=12
+TAG_PATTERN="build-*"
 
-affectedAppsStr=$(getAffectedApps)
+tags=(  $(git tag -l "$TAG_PATTERN") )
+mostRecentTag=${tags:0}
+
+echo "Last successful build tag: $mostRecentTag"
+
+if [ "$mostRecentTag" = "" ]; then
+  echo "WARNING! No tags matching $TAG_PATTERN was found"
+  echo "Setting base to origin/master"
+  mostRecentTag="origin/master"
+fi
+
+lastSuccessfulBuild=$(git rev-list -n 1 $mostRecentTag)
+echo "Checking what apps should be built since commit: $lastSuccessfulBuild"
+
+affectedAppsStr=$(./node_modules/.bin/nx affected:apps $lastSuccessfulBuild HEAD)
 affectedApps=()
  while IFS=' ' read -ra ADDR; do
       for i in "${ADDR[@]}"; do
@@ -15,16 +25,13 @@ affectedApps=()
       done
  done <<< "$affectedAppsStr"
 
- echo ${affectedApps[@]}
-# echo $(yarn run affected:apps origin/master HEAD | cat)
+echo "Linting affected code"
+echo "$(npm run affected:lint $lastSuccessfulBuild HEAD)"
 
+echo "Testing affected code"
+echo "$(npm run affected:test $lastSuccessfulBuild HEAD)"
+
+echo "Building $affectedAppsStr"
 for i in "${affectedApps[@]}"; do
-    set -x
-    $(npm run build:ci -- --project="$i")
+    echo "$(npm run build:ci -- --project="$i")"
 done
-
-# for i in 1 2 3 4 5
-# do
-#   echo "Looping ... number $i"
-# done
-

@@ -1,17 +1,23 @@
 pipeline {
-    agent any
-
-    node {
+   agent any
+   node {
       checkout scm
-
-      stage('Build') {
-          echo 'Building....'
+   }
+   stages {
+     stage ("Lint") {
+         steps {
+            sh "yarn"
+         }
       }
-      stage('Test') {
-          echo 'Building....'
+      stage ("Test") {
+         steps {
+            sh "yarn"
+         }
       }
-      stage('Deploy') {
-          echo 'Deploying....'
+      stage ("Build") {
+         steps {
+            sh "yarn"
+         }
       }
-    }
+   }
 }
